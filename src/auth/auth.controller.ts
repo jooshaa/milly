@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus
 import { AuthService } from './auth.service';
 import type { Response } from 'express';
 import { CookieGetter } from '../common/decorators/cookie-getter.decorators';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { loginUserDto } from '../user/dto/login-dto';
 
 
 
@@ -22,14 +24,14 @@ export class AuthController {
     return this.authService.login(loginUserDto, res)
   }
 
-  // @HttpCode(200)
-  // @Post('logout')
-  // logout(
-  //   @CookieGetter("refreshToken") refreshToken: string,
-  //   @Res({ passthrough: true }) res: Response
-  // ) {
-  //   return this.authService.logout(refreshToken, res)
-  // }
+  @HttpCode(200)
+  @Post('logout')
+  logout(
+    @CookieGetter("refreshToken") refreshToken: string,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    return this.authService.logout(refreshToken, res)
+  }
 
   // @HttpCode(200)
   // @Post(':id/refresh')

@@ -12,6 +12,9 @@ const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const admin_module_1 = require("./admin/admin.module");
 const auth_module_1 = require("./auth/auth.module");
+const user_module_1 = require("./user/user.module");
+const region_module_1 = require("./region/region.module");
+const district_module_1 = require("./district/district.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -20,7 +23,10 @@ exports.AppModule = AppModule = __decorate([
         imports: [config_1.ConfigModule.forRoot({ envFilePath: ".env", isGlobal: true }),
             mongoose_1.MongooseModule.forRoot(process.env.MONGO_URL),
             admin_module_1.AdminModule,
-            auth_module_1.AuthModule],
+            auth_module_1.AuthModule,
+            user_module_1.UserModule,
+            region_module_1.RegionModule,
+            district_module_1.DistrictModule],
         controllers: [],
         providers: [],
     })

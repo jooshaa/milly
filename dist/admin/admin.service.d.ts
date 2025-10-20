@@ -37,11 +37,6 @@ export declare class AdminService {
     } & {
         __v: number;
     }, {}, Admin, "findOneAndUpdate", {}>;
-    findAdminByEmail(email: string): Promise<(mongoose.Document<unknown, {}, Admin, {}, {}> & Admin & {
-        _id: mongoose.Types.ObjectId;
-    } & {
-        __v: number;
-    }) | null>;
     remove(id: string): mongoose.Query<(mongoose.Document<unknown, {}, Admin, {}, {}> & Admin & {
         _id: mongoose.Types.ObjectId;
     } & {

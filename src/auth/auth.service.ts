@@ -6,6 +6,7 @@ import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 import { loginUserDto } from '../user/dto/login-dto';
 import { UserDocument } from '../user/schema/user.entity';
 import { UserService } from '../user/user.service';
+import { CreateUserDto } from '../user/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -33,15 +34,15 @@ export class AuthService {
     return {accessToken, refreshToken}
   }
 
-  async registration(createAdminDto: CreateAdminDto){
+  async registration(createUserDto: CreateUserDto){
     const candidate = await this.userService.findAdminByEmail(
-      createAdminDto.email
+      createUserDto.email
     );
     if(candidate){
       throw new ConflictException("bunday foydallunvchi mavjud");
     }
 
-    const newUser = this.userService.create(createAdminDto)
+    const newUser = this.userService.create(createUserDto)
     return newUser
   }
 
@@ -87,7 +88,7 @@ export class AuthService {
     if(!userData){
       throw new ForbiddenException("user not verified ")
     }
-    const user = await this.usersService.findOne(userData.id)
+    const user = await this.userService.findOne(userData.id)
     if(!user){
       throw new BadRequestException ("wrong token")
     }

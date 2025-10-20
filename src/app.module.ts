@@ -4,6 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { RegionModule } from './region/region.module';
+import { DistrictModule } from './district/district.module';
 
 
 @Module({
@@ -11,7 +13,9 @@ import { UserModule } from './user/user.module';
     MongooseModule.forRoot(process.env.MONGO_URL!),
     AdminModule,
     AuthModule,
-    UserModule
+    UserModule,
+    RegionModule,
+    DistrictModule
   ],
   controllers: [],
   providers: [],
