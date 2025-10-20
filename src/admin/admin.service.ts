@@ -34,11 +34,7 @@ export class AdminService {
     }
     return this.adminSchema.findByIdAndUpdate(id, updateAdminDto)
   }
-  async findAdminByEmail(email: string) {
-    const user = await this.adminSchema.findOne({where: {email}})
-    return user
-   
-  }
+  
 
   remove(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id)) {

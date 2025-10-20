@@ -80,6 +80,10 @@ let AdminService = class AdminService {
         }
         return this.adminSchema.findByIdAndUpdate(id, updateAdminDto);
     }
+    async findAdminByEmail(email) {
+        const user = await this.adminSchema.findOne({ where: { email } });
+        return user;
+    }
     remove(id) {
         if (!mongoose_2.default.Types.ObjectId.isValid(id)) {
             throw new common_1.BadRequestException("id notogri");

@@ -2,23 +2,23 @@ import { BadRequestException, ConflictException, ForbiddenException, Injectable,
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt'
 import type { Response } from 'express';
-import { AdminService } from '../admin/admin.service';
-import { Admin } from '../admin/schema/admin.schema';
 import { CreateAdminDto } from '../admin/dto/create-admin.dto';
-import { loginUserDto } from '../admin/dto/login-dto';
+import { loginUserDto } from '../user/dto/login-dto';
+import { UserDocument } from '../user/schema/user.entity';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly adminService: AdminService,
-    private readonly jwtService: JwtService) { }
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,) { }
 
-  private async generateTokens(user: AdminDocument) {
+  private async generateTokens(user: UserDocument) {
     const payload = {
       id: user._id,
       email: user.email,
-      is_active: user.is_active,
-      is_owner: user.is_owner,
+      name: user.name,
+      phone_number: user.phone_number,
     }
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.sign(payload, {
@@ -34,19 +34,19 @@ export class AuthService {
   }
 
   async registration(createAdminDto: CreateAdminDto){
-    const candidate = await this.adminService.findAdminByEmail(
+    const candidate = await this.userService.findAdminByEmail(
       createAdminDto.email
     );
     if(candidate){
       throw new ConflictException("bunday foydallunvchi mavjud");
     }
 
-    const newUser = this.adminService.create(createAdminDto)
+    const newUser = this.userService.create(createAdminDto)
     return newUser
   }
 
   async login(loginDto: loginUserDto, res:Response){
-    const user = await this.adminService.findAdminByEmail(loginDto.email)
+    const user = await this.userService.findAdminByEmail(loginDto.email)
     if(!user){
       throw new UnauthorizedException("email yoki parol notugri")
     }
@@ -58,7 +58,7 @@ export class AuthService {
 
     const {accessToken, refreshToken}= await this.generateTokens(user)
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 7);
-    user.ref_token= hashedRefreshToken
+    user.refresh_token= hashedRefreshToken
     await user.save();
     
     res.cookie(
@@ -76,10 +76,10 @@ export class AuthService {
     }
   }
   async logout(refreshToken: string, res: Response){
-    // res.clearCookie("refreshTokne", {
-    //   maxAge: Number(process.env.COOKIE_TIME),
-    //   httpOnly: true
-    // })
+    res.clearCookie("refreshTokne", {
+      maxAge: Number(process.env.COOKIE_TIME),
+      httpOnly: true
+    })
 
     const userData = await this.jwtService.verify(refreshToken, {
       secret: process.env.REFRESH_TOKEN_KEY,
@@ -91,7 +91,7 @@ export class AuthService {
     if(!user){
       throw new BadRequestException ("wrong token")
     }
-    user.ref_token = "";
+    user.refresh_token = "";
     await user.save()
 
     res.clearCookie("refreshToken");
